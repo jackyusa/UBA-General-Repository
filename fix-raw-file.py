@@ -9,23 +9,31 @@ df = pd.read_csv('rawFile.csv',index_col=0)
 def removeRows():
     # First filter out those that aren't ODA/CAA/LAA/OAP/OAB
     df.drop(df[
-        (df.SCHEME_TYPE != "ODA") &
-        (df.SCHEME_TYPE != "CAA") &
-        (df.SCHEME_TYPE != "LAA") &
-        (df.SCHEME_TYPE != "OAP") &
-        (df.SCHEME_TYPE != "OAB")].index, inplace=True)
+        (df['SCHEME_TYPE'] != "ODA") &
+        (df['SCHEME_TYPE'] != "CAA") &
+        (df['SCHEME_TYPE'] != "LAA") &
+        (df['SCHEME_TYPE'] != "OAP") &
+        (df['SCHEME_TYPE'] != "OAB")].index, inplace=True)
     
     # Find where rows are OAB/OAP and dont have 1121 in the
-    # account number and set the account number to "1" then
-    # go through the rows again and delete rows that have "1"
-    df.loc[df['ACCOUNT_NO.'.find('1121') != -1], 'ACCOUNT_NO.'] = 1
-    df.drop(df['ACCOUNT_NO.' == 1].index, inplace=True)
+    # account number and remove them
+    df['ACCOUNT_NO.'] = df['ACCOUNT_NO.'].apply(str)
+    df.drop(df[
+        (df['SCHEME_TYPE' == "OAB"]) & (df['ACCOUNT_NO.'].str.contains("1121",case=False))
+    ])
+    df.drop(df[
+        (df['SCHEME_TYPE' == "OAP"]) & (df['ACCOUNT_NO.'].str.contains("1121",case=False))
+    ])
 
     df.to_csv('rawFile.csv')
+    print("Irrelevant scheme types have been removed and account numbers containing 1121 have been saved.")
 
 # Set empty maturity dates to tomorrows date
 def emptyMaturity():
     tomorrow_datetime = datetime.now() + timedelta(days=1)
-    replaced = df['MATURITY_DATE'].replace('',tomorrow_datetime.date())
+    
+    df['MATURITY_DATE'].fillna(tomorrow_datetime.date(), inplace=True)
+    df['MATURITY_DATE'] = pd.to_datetime(df['MATURITY_DATE'])
+    df.to_csv('rawFile.csv')
 
-    replaced.to_csv('rawFile.csv')
+    print("Empty Maturity_Date cells have been changed to tomorrows date.")

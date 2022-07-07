@@ -29,12 +29,12 @@ def sortDate():
 
 ########################## REAL EXAMPLE ################################
 
-sheet = pd.read_csv('workFile.csv',index_col=0)
+sheet = pd.read_csv('mci-mco.csv',index_col=0)
 
 def sortMaturity():
     sheet["MATURITY_DATE"] = pd.to_datetime(sheet["MATURITY_DATE"])
     result = sheet.sort_values(by='MATURITY_DATE')
-    result.to_csv('workFile.csv')
+    result.to_csv('mci-mco.csv')
 
     print("Maturity dates sorted sucessfully!")
 
