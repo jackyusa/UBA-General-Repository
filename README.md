@@ -8,7 +8,10 @@ Automation of the Excel tasks through Python
   * emptyMaturity()
     * Sets empty maturity date cells to tomorrow's date.
     * Tomorrow's date will always update to the next date using the pandas datetime functions.
-    
+  * sortByMaturity()
+    * Sorts the dataframe(file) based on the maturity date in ascending order.
+  * *fixFile()*
+    * The conclusive function that calls all prior functions in the file. Results in the finished file.
 * **mci-mco.py**
   * addRow()
     * Adds a row with certain columns to the dataframe.
