@@ -2,11 +2,19 @@ from re import T
 import pandas as pd
 import numpy as np
 from datetime import timedelta, datetime
-
+import requests
 from pkg_resources import empty_provider
+import json
+
+response = requests.get("https://v6.exchangerate-api.com/v6/81a98818ac24839899cdc992/latest/USD")
+data = response.text
+parse_json = json.loads(data)
+rates = parse_json['conversion_rates']
+print(rates['AUD'])
 
 df = pd.read_csv('rawFile.csv', index_col=0)
 
+###############################################################################################################################
 # Remove rows that are not ODA/CAA/LAA or OAB/OAP that
 # the account number doesn't have 1121 in the 7th place
 def removeRows():
@@ -32,6 +40,7 @@ def removeRows():
     df.to_csv('rawFile.csv')
     print("Irrelevant scheme types have been removed and account numbers containing 1121 have been saved.")
 
+###############################################################################################################################
 # Set empty maturity dates to tomorrows date
 def emptyMaturity():
     tomorrow_datetime = datetime.now() + timedelta(days=1)
@@ -42,6 +51,7 @@ def emptyMaturity():
 
     print("Empty Maturity_Date cells have been changed to tomorrows date.")
 
+###############################################################################################################################
 # Sorts the dataframe based on the Maturity date in ascending order
 def sortByMaturity():
     df["MATURITY_DATE"] = pd.to_datetime(df["MATURITY_DATE"])
@@ -50,4 +60,20 @@ def sortByMaturity():
 
     print("Maturity dates sorted sucessfully!")
 
-sortByMaturity()
+###############################################################################################################################
+# Add a "AMOUNT" column after CLS_BALANCE column 
+# then multiply CLS_BALANCE cells by -1
+#def addAmount():
+    
+
+###############################################################################################################################
+# add USD column and covert AMOUNT to USD currency by the related conversion rate
+# add USD_AMOUNT after CURRENCY
+#def convertToUSD():
+
+
+###############################################################################################################################
+def fixFile():
+    emptyMaturity()
+    sortByMaturity()
+    removeRows()
