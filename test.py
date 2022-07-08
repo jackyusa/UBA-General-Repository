@@ -1,14 +1,8 @@
 from cmath import nan
 import pandas as pd
 from datetime import timedelta, datetime
-import openpyxl
 
 df = pd.read_csv('test.csv',index_col=0)
-
-def date():
-    tomorrow_datetime = datetime.now() + timedelta(days=1)
-    
-    print(tomorrow_datetime.date())
 
 # test setting empty ones to 1 then changing them
 def emptyMaturity():
@@ -21,11 +15,10 @@ def emptyMaturity():
 
 def removeRows():
     df.drop(df[
-        (df.index != "jacky") &
-        (df.index != "jason")].index, inplace=True)
-
-    df['amount'] = df['amount'].apply(str)
+        (df['amount'] == 230) &
+        (df.index.str.contains("a"))
+    ].index,inplace=True)
 
     df.to_csv("test.csv")
 
-emptyMaturity()
+removeRows()
