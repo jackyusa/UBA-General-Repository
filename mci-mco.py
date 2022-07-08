@@ -39,3 +39,16 @@ def sortMaturity():
     print("Maturity dates sorted sucessfully!")
 
 sortMaturity()
+
+
+def xoaToUSD(xoa):
+    return xoa
+
+def xofToUSD(xof):
+    return xof
+
+def poundsToUSD(pounds):
+    return pounds 
+
+def euroToUSD(euro):
+    return euro
