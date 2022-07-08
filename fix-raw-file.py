@@ -22,11 +22,11 @@ def removeRows():
     # account number and remove them
     df.drop(df[
         (df['SCHEME_TYPE'] == 'OAB') &
-        (df.index.str.contains("1121",case=False))
+        (~df.index.str.contains("1121",case=False))
     ].index,inplace=True)
     df.drop(df[
         (df['SCHEME_TYPE'] == 'OAP') &
-        (df.index.str.contains("1121",case=False))
+        (~df.index.str.contains("1121",case=False))
     ].index,inplace=True)
 
     df.to_csv('rawFile.csv')
