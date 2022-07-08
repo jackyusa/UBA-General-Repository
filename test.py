@@ -1,6 +1,7 @@
 from cmath import nan
 import pandas as pd
 from datetime import timedelta, datetime
+import openpyxl
 
 df = pd.read_csv('test.csv',index_col=0)
 
@@ -25,13 +26,6 @@ def removeRows():
 
     df['amount'] = df['amount'].apply(str)
 
-    df.drop(df[
-        ((df.index == 'jacky') or (df.index == 'jason')) &
-        (df['amount'] == "230")
-    ].index, inplace=True)
-
     df.to_csv("test.csv")
 
-emptyMaturity()  
-
-removeRows()
+emptyMaturity()

@@ -17,12 +17,12 @@ def removeRows():
     
     # Find where rows are OAB/OAP and dont have 1121 in the
     # account number and remove them
-    df['ACCOUNT_NO.'] = df['ACCOUNT_NO.'].apply(str)
+    #df['ACCOUNT_NO.'] = df['ACCOUNT_NO.'].apply(str)
     df.drop(df[
-        (df['SCHEME_TYPE' == "OAB"]) & (df['ACCOUNT_NO.'].str.contains("1121",case=False))
+        (df['SCHEME_TYPE' == "OAB"]) & (df.index.str.contains(1121,case=False))
     ])
     df.drop(df[
-        (df['SCHEME_TYPE' == "OAP"]) & (df['ACCOUNT_NO.'].str.contains("1121",case=False))
+        (df['SCHEME_TYPE' == "OAP"]) & (df.index.str.contains(1121,case=False))
     ])
 
     df.to_csv('rawFile.csv')
@@ -33,7 +33,16 @@ def emptyMaturity():
     tomorrow_datetime = datetime.now() + timedelta(days=1)
     
     df['MATURITY_DATE'].fillna(tomorrow_datetime.date(), inplace=True)
-    df['MATURITY_DATE'] = pd.to_datetime(df['MATURITY_DATE'])
+    df['MATURITY_DATE'] = pd.to_datetime(df['MATURITY_DATE'],errors='coerce')
     df.to_csv('rawFile.csv')
 
     print("Empty Maturity_Date cells have been changed to tomorrows date.")
+
+def sortByMaturity():
+    df["MATURITY_DATE"] = pd.to_datetime(df["MATURITY_DATE"])
+    df1 = df.sort_values(by='MATURITY_DATE')
+    df1.to_csv('rawFile.csv')
+
+    print("Maturity dates sorted sucessfully!")
+
+removeRows()
