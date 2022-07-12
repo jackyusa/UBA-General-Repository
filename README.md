@@ -13,7 +13,7 @@ Automation of the Excel tasks through Python
   * addAmountColumn()
     * Adds a column called "AMOUNT" and has the values of CLS_BALANCE that are negated.
   * insertColumn(columnName, index, values)
-    * Takes a 
+    * Takes a :
         * *columnName* = what you want to call the column
         * *index* = where you want the column to go in the dataframe
         * *values* = what you want it's values to be
