@@ -14,9 +14,9 @@ Automation of the Excel tasks through Python
     * Adds a column called "AMOUNT" and has the values of CLS_BALANCE that are negated.
   * insertColumn(columnName, index, values)
     * Takes a 
-             * columnName = what you want to call the column
-             * index = where you want the column to go in the dataframe
-             * values = what you want it's values to be
+        * columnName = what you want to call the column
+        * index = where you want the column to go in the dataframe
+        * values = what you want it's values to be
   * convertToUSD()
     * Adds a column called USD_AMOUNT that contains the Amounts converted to USD through conversion rates.
   * *fixFile()*
