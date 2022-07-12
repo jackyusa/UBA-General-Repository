@@ -10,6 +10,15 @@ Automation of the Excel tasks through Python
     * Tomorrow's date will always update to the next date using the pandas datetime functions.
   * sortByMaturity()
     * Sorts the dataframe(file) based on the maturity date in ascending order.
+  * addAmountColumn()
+    * Adds a column called "AMOUNT" and has the values of CLS_BALANCE that are negated.
+  * insertColumn(columnName, index, values)
+    * Takes a 
+             * columnName = what you want to call the column
+             * index = where you want the column to go in the dataframe
+             * values = what you want it's values to be
+  * convertToUSD()
+    * Adds a column called USD_AMOUNT that contains the Amounts converted to USD through conversion rates.
   * *fixFile()*
     * The conclusive function that calls all prior functions in the file. Results in the finished file.
 * **mci_mco.py**
