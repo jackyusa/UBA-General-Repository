@@ -39,7 +39,7 @@ def removeRows():
     ].index,inplace=True)
 
     df.to_csv('inputRawFile.csv')
-    print("Irrelevant scheme types have been removed and account numbers containing 1121 have been saved.")
+    print("Irrelevant scheme types have been removed and account numbers containing 1121 have been saved. - ✔")
 
 ###############################################################################################################################
 # Set empty maturity dates to tomorrows date
@@ -50,7 +50,7 @@ def emptyMaturity():
     df['MATURITY_DATE'] = pd.to_datetime(df['MATURITY_DATE'],errors='coerce')
     df.to_csv('inputRawFile.csv')
 
-    print("Empty Maturity_Date cells have been set to tomorrow's date: "+ str(tomorrow_datetime))
+    print("Empty Maturity_Date cells have been set to tomorrow's date: "+ str(tomorrow_datetime.date())+ " - ✔")
 
 ###############################################################################################################################
 # Sorts the dataframe based on the Maturity date in ascending order
@@ -59,7 +59,7 @@ def sortByMaturity():
     df1 = df.sort_values(by='MATURITY_DATE')
     df.to_csv('inputRawFile.csv')
 
-    print("Maturity dates sorted sucessfully!")
+    print("Maturity dates sorted sucessfully! - ✔")
 
 ###############################################################################################################################
 # Add a "AMOUNT" column after CLS_BALANCE column 
@@ -75,12 +75,12 @@ def addAmountColumn():
         value = float(value)
         df['AMOUNT'].values[i] = value * -1
     df.to_csv('inputRawFile.csv')
-    print("Amount column has been inserted with negative values")
+    print("Amount column has been inserted with negative values - ✔")
 
 def insertColumn(columnName,index,values):
     df.insert(index,columnName,values)
     df.to_csv('inputRawFile.csv')
-    print(columnName + " has been inserted into the dataframe in column " + index)
+    print(columnName + " has been inserted into the dataframe in column " + index + "- ✔")
 
 ###############################################################################################################################
 # add USD column and covert AMOUNT to USD currency by the related conversion rate
@@ -95,13 +95,15 @@ def convertToUSD():
         value = float(value)
         df['USD_AMOUNT'].values[i] = value * rates[df['CRNCY'].values[i]]
     df.to_csv('inputRawFile.csv')
-    print("USD_AMOUNT column has been inserted and currencies have been converted to USD")
+    print("USD_AMOUNT column has been inserted and currencies have been converted to USD - ✔")
 
 ###############################################################################################################################
 def fixFile():
     emptyMaturity()
     sortByMaturity()
     removeRows()
+    addAmountColumn()
+    convertToUSD()
 
 ###############################################################################################################################
 # clears the file
@@ -111,5 +113,3 @@ def clearFile(file):
     f.close()
 
 fixFile()
-addAmountColumn()
-convertToUSD()
