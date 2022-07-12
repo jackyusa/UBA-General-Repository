@@ -13,7 +13,7 @@ rates = parse_json['conversion_rates']
 
 ###############################################################################################################################
 # Creates the dataframe for the file
-df = pd.read_csv("inputTest.csv", index_col=0)
+df = pd.read_csv("inputRawFile.csv", index_col=0)
 
 ###############################################################################################################################
 # Remove rows that are not ODA/CAA/LAA or OAB/OAP that
@@ -50,7 +50,7 @@ def emptyMaturity():
     df['MATURITY_DATE'] = pd.to_datetime(df['MATURITY_DATE'],errors='coerce')
     df.to_csv('inputRawFile.csv')
 
-    print("Empty Maturity_Date cells have been set to tomorrow's date: "+ tomorrow_datetime)
+    print("Empty Maturity_Date cells have been set to tomorrow's date: "+ str(tomorrow_datetime))
 
 ###############################################################################################################################
 # Sorts the dataframe based on the Maturity date in ascending order
@@ -66,7 +66,14 @@ def sortByMaturity():
 # then multiply CLS_BALANCE cells by -1
 def addAmountColumn():
     df.insert(4,'AMOUNT','')
-    df['AMOUNT'] = df['CLS_BALANCE'] * -1
+    x = len(df.index)
+    non = "',"
+    for i in range(0,x):
+        # Fixes the formatting of CLS_BALANCE and sets it to a float type
+        value = df['CLS_BALANCE'].values[i]
+        for char in non: value=value.replace(char,"")
+        value = float(value)
+        df['AMOUNT'].values[i] = value * -1
     df.to_csv('inputRawFile.csv')
     print("Amount column has been inserted with negative values")
 
@@ -81,8 +88,12 @@ def insertColumn(columnName,index,values):
 def convertToUSD():
     df.insert(9,'USD_AMOUNT','')
     x = len(df.index)
+    non = "',"
     for i in range(0,x):
-        df['USD_AMOUNT'].values[i] = df['CLS_BALANCE'].values[i] * rates[df['CRNCY'].values[i]]
+        value = df['CLS_BALANCE'].values[i]
+        for char in non: value=value.replace(char,"")
+        value = float(value)
+        df['USD_AMOUNT'].values[i] = value * rates[df['CRNCY'].values[i]]
     df.to_csv('inputRawFile.csv')
     print("USD_AMOUNT column has been inserted and currencies have been converted to USD")
 
@@ -98,3 +109,7 @@ def clearFile(file):
     f = open(file, "w")
     f.truncate()
     f.close()
+
+fixFile()
+addAmountColumn()
+convertToUSD()
