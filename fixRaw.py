@@ -113,3 +113,29 @@ def clearFile(file):
     f.close()
 
 fixFile()
+
+# Go through the SCHEME_TYPES pull out CAA & ODA 
+# make a file entry name dda  that is in columns
+#"ACCOUNT_NO" & "ACCOUNT_NANE"  
+# CALCULATE THE SUM FOR ALL USD_AMOUNT
+def createDDA():
+    1
+
+"""    
+CUURENT DATE + BUCKET RANGE 
+BUCKET RANGE DATES 
+CURRENT DATE + 1 DAY = 0.1267
+CURRENT DATE + 6 DAYS = 0.2578
+CURRENT DATE + 8 DAYS = 0.0282
+CURRENT DATE + 15 DAYS = 0.0834
+CURRENT DATE + 30 DAYS = 0.0
+CURRENT DATE + 30 DAYS = 0.1387
+CURRENT DATW + 150 DAYS = 0.0596
+CURRENT DATE + 180 DAYS = 0.0 
+CURRENT DATE = 365 DAYS = 0.0 
+CURRENT DATE + 730 DAYS = 0.3056 
+
+MULTIPLY THE DDA SUM WITH THE PERCENTAGE *(DOUBLES)* 
+"""
+def liquidityStress():
+    1 
