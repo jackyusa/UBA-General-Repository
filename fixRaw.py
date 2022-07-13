@@ -126,16 +126,6 @@ def removeColumns():
     df.drop(df.columns[len(df.columns)-1], axis=1, inplace=True)
     df.to_csv('inputRawFile.csv')
     print("Irrelevant columns have been removed - ✔")
-###############################################################################################################################
-# Calls all functions
-def fixFile():
-    emptyMaturity()
-    sortByMaturity()
-    removeRows()
-    addAmountColumn()
-    convertToUSD()
-    removeColumns()
-    insertDDA()
 
 ###############################################################################################################################
 # Clears the file
@@ -166,16 +156,100 @@ def insertDDA():
     x = len(df.index)-1
     df.rename(index={x:'DDA'},inplace=True)
 
+    dda1 = [
+        'DDA', 'DDA',
+        '','','','',(datetime.now() + timedelta(days=1)),'',(usd_sum*0.1267)
+    ]
+    dda2 = [
+        'DDA', 'DDA',
+        '','','','',(datetime.now() + timedelta(days=6)),'',(usd_sum*0.2578)
+    ]
+    dda3 = [
+        'DDA', 'DDA',
+        '','','','',(datetime.now() + timedelta(days=8)),'',(usd_sum*0.0282)
+    ]
+    dda4 = [
+        'DDA', 'DDA',
+        '','','','',(datetime.now() + timedelta(days=15)),'',(usd_sum*0.0834)
+    ]
+    dda5 = [
+        'DDA', 'DDA',
+        '','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.0)
+    ]
+    dda6 = [
+        'DDA', 'DDA',
+        '','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.1387)
+    ]
+    dda7 = [
+        'DDA', 'DDA',
+        '','','','',(datetime.now() + timedelta(days=150)),'',(usd_sum*0.0596)
+    ]
+    dda8 = [
+        'DDA', 'DDA',
+        '','','','',(datetime.now() + timedelta(days=180)),'',(usd_sum*0.0)
+    ]
+    dda9 = [
+        'DDA', 'DDA',
+        '','','','',(datetime.now() + timedelta(days=365)),'',(usd_sum*0.0)
+    ]
+    dda10 = [
+        'DDA', 'DDA',
+        '','','','',(datetime.now() + timedelta(days=730)),'',(usd_sum*0.3056)
+    ]
+
+    df.loc[df.shape[0]] = dda1
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+    
+    df.loc[df.shape[0]] = dda2
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+    
+    df.loc[df.shape[0]] = dda3
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda4
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda5
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda6
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda7
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda8
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda9
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda10
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
     # Fixing date formatting
     for i in range(0,len(df.index)):
         if(df['MATURITY_DATE'][i] != ''):
             date = df['MATURITY_DATE'][i]
             date.strftime('%Y-%m-%d')
             df['MATURITY_DATE'][i] = date.strftime('%Y-%m-%d')
-    df.to_csv('inputRawFile.csv')
-    print("DDA row has been added to the bottom - ✔")
 
-"""    
+    print("DDA row has been added to the bottom - ✔")
+    # Delete not needed DDA row
+    
+    df.to_csv('inputRawFile.csv')
+
+"""
 CUURENT DATE + BUCKET RANGE 
 BUCKET RANGE DATES 
 CURRENT DATE + 1 DAY = 0.1267
@@ -190,5 +264,16 @@ CURRENT DATE = 365 DAYS = 0.0
 CURRENT DATE + 730 DAYS = 0.3056 
 MULTIPLY THE DDA SUM WITH THE PERCENTAGE *(DOUBLES)* 
 """
+
+###############################################################################################################################
+# Calls all functions
+def fixFile():
+    emptyMaturity()
+    sortByMaturity()
+    removeRows()
+    addAmountColumn()
+    convertToUSD()
+    removeColumns()
+    insertDDA()
 
 fixFile()
