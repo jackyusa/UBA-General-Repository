@@ -39,10 +39,11 @@ def removeRows():
     ].index,inplace=True)
 
     df.to_csv('inputRawFile.csv')
-    print("Irrelevant scheme types have been removed and account numbers containing 1121 have been saved. - ✔")
+    print("Irrelevant scheme types have been removed and account numbers containing 1121 have been saved - ✔")
 
 ###############################################################################################################################
 # Set empty maturity dates to tomorrows date
+# Set dates before today to tomorrow
 def emptyMaturity():
     tomorrow_datetime = datetime.now() + timedelta(days=1)
     
@@ -55,17 +56,24 @@ def emptyMaturity():
 ###############################################################################################################################
 # Sorts the dataframe based on the Maturity date in ascending order
 def sortByMaturity():
-    df["MATURITY_DATE"] = pd.to_datetime(df["MATURITY_DATE"])
-    df1 = df.sort_values(by='MATURITY_DATE')
+    tomorrow_datetime = datetime.now() + timedelta(days=1)
+
+    x = len(df.index)
+    for i in range(0,x):
+        if type(df['MATURITY_DATE'][i]) == 'datetime.date':
+            if((df['MATURITY_DATE'][i]) < datetime.now().date()):
+                df['MATURITY_DATE'][i] = tomorrow_datetime
+
+    df.sort_values(by='MATURITY_DATE', ascending=True, inplace=True)
     df.to_csv('inputRawFile.csv')
 
-    print("Maturity dates sorted sucessfully! - ✔")
+    print("Maturity dates sorted sucessfully and old dates are set to tomorrow's date - ✔")
 
 ###############################################################################################################################
 # Add a "AMOUNT" column after CLS_BALANCE column 
 # then multiply CLS_BALANCE cells by -1
 def addAmountColumn():
-    df.insert(4,'AMOUNT','')
+    df.insert(3,'AMOUNT','')
     x = len(df.index)
     non = "',"
     for i in range(0,x):
@@ -83,43 +91,89 @@ def insertColumn(columnName,index,values):
     print(columnName + " has been inserted into the dataframe in column " + index + "- ✔")
 
 ###############################################################################################################################
-# add USD column and covert AMOUNT to USD currency by the related conversion rate
-# add USD_AMOUNT after CURRENCY
+# Add USD column and covert AMOUNT to USD currency by the related conversion rate
+# Add USD_AMOUNT after CURRENCY
 def convertToUSD():
-    df.insert(9,'USD_AMOUNT','')
+    df.insert(13,'USD_AMOUNT','')
     x = len(df.index)
     non = "',"
     for i in range(0,x):
         value = df['CLS_BALANCE'].values[i]
         for char in non: value=value.replace(char,"")
-        value = float(value)
+        value = float(value) * -1
         df['USD_AMOUNT'].values[i] = value * rates[df['CRNCY'].values[i]]
     df.to_csv('inputRawFile.csv')
     print("USD_AMOUNT column has been inserted and currencies have been converted to USD - ✔")
 
 ###############################################################################################################################
+# Remove irrelevant columns
+def removeColumns():
+    del df['AVG_CR_BALANCE']
+    del df['AVG_DR_BALANCE']
+    del df['INT_EXPENSE']
+    del df['INT_INCOME']
+    del df['GL_SUB_HEAD_CODE']
+    del df['A/C_CLASSIFICATION']
+    del df['CR_INT_RATE']
+    del df['DR_INT_RATE']
+    del df['COUNTRY']
+    del df['INT_CODE']
+    del df['LAST_DAY_IN_DR_BAL']
+    del df['INT_PAY_FLAG']
+    del df['INT_COLL_FLAG']
+    del df['CUST_ID']
+    del df['OPENING_BAL.']
+    df.drop(df.columns[len(df.columns)-1], axis=1, inplace=True)
+    df.to_csv('inputRawFile.csv')
+    print("Irrelevant columns have been removed - ✔")
+###############################################################################################################################
+# Calls all functions
 def fixFile():
     emptyMaturity()
     sortByMaturity()
     removeRows()
     addAmountColumn()
     convertToUSD()
+    removeColumns()
+    insertDDA()
 
 ###############################################################################################################################
-# clears the file
+# Clears the file
 def clearFile(file):
     f = open(file, "w")
     f.truncate()
     f.close()
 
-fixFile()
-
+###############################################################################################################################
 # Go through the SCHEME_TYPES pull out CAA & ODA 
 # make a file entry name dda  that is in columns
-#"ACCOUNT_NO" & "ACCOUNT_NANE"  
+# "ACCOUNT_NO" & "ACCOUNT_NANE"  
 # CALCULATE THE SUM FOR ALL USD_AMOUNT
-def createDDA():
-    1
+def insertDDA():
+    empty = []
+    for i in range(0,len(df.index)):
+        if(df['SCHEME_TYPE'][i] == 'CAA'):
+            empty.append(df['USD_AMOUNT'][i])
+    for i in range(0,len(df.index)):
+        if(df['SCHEME_TYPE'][i] == 'ODA'):
+            empty.append(df['USD_AMOUNT'][i])
+    usd_sum = sum(empty)
+    dda = [
+        'DDA', 'DDA',
+        '','','','','','',usd_sum
+    ]
+    df.loc[df.shape[0]] = dda
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    # Fixing date formatting
+    for i in range(0,len(df.index)):
+        if(df['MATURITY_DATE'][i] != ''):
+            date = df['MATURITY_DATE'][i]
+            date.strftime('%Y-%m-%d')
+            df['MATURITY_DATE'][i] = date.strftime('%Y-%m-%d')
+    df.to_csv('inputRawFile.csv')
+    print("DDA row has been added to the bottom - ✔")
 
 """    
 CUURENT DATE + BUCKET RANGE 
@@ -134,8 +188,7 @@ CURRENT DATW + 150 DAYS = 0.0596
 CURRENT DATE + 180 DAYS = 0.0 
 CURRENT DATE = 365 DAYS = 0.0 
 CURRENT DATE + 730 DAYS = 0.3056 
-
 MULTIPLY THE DDA SUM WITH THE PERCENTAGE *(DOUBLES)* 
 """
-def liquidityStress():
-    1 
+
+fixFile()
