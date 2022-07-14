@@ -154,48 +154,18 @@ def insertDDA():
     ]
     df.loc[df.shape[0]] = dda
     x = len(df.index)-1
-    df.rename(index={x:'DDA'},inplace=True)
+    df.rename(index={x:'DDA1'},inplace=True)
 
-    dda1 = [
-        'DDA', 'DDA',
-        '','','','',(datetime.now() + timedelta(days=1)),'',(usd_sum*0.1267)
-    ]
-    dda2 = [
-        'DDA', 'DDA',
-        '','','','',(datetime.now() + timedelta(days=6)),'',(usd_sum*0.2578)
-    ]
-    dda3 = [
-        'DDA', 'DDA',
-        '','','','',(datetime.now() + timedelta(days=8)),'',(usd_sum*0.0282)
-    ]
-    dda4 = [
-        'DDA', 'DDA',
-        '','','','',(datetime.now() + timedelta(days=15)),'',(usd_sum*0.0834)
-    ]
-    dda5 = [
-        'DDA', 'DDA',
-        '','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.0)
-    ]
-    dda6 = [
-        'DDA', 'DDA',
-        '','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.1387)
-    ]
-    dda7 = [
-        'DDA', 'DDA',
-        '','','','',(datetime.now() + timedelta(days=150)),'',(usd_sum*0.0596)
-    ]
-    dda8 = [
-        'DDA', 'DDA',
-        '','','','',(datetime.now() + timedelta(days=180)),'',(usd_sum*0.0)
-    ]
-    dda9 = [
-        'DDA', 'DDA',
-        '','','','',(datetime.now() + timedelta(days=365)),'',(usd_sum*0.0)
-    ]
-    dda10 = [
-        'DDA', 'DDA',
-        '','','','',(datetime.now() + timedelta(days=730)),'',(usd_sum*0.3056)
-    ]
+    dda1 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=1)),'',(usd_sum*0.1267)]
+    dda2 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=6)),'',(usd_sum*0.2578)]
+    dda3 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=8)),'',(usd_sum*0.0282)]
+    dda4 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=15)),'',(usd_sum*0.0834)]
+    dda5 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.0)]
+    dda6 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.1387)]
+    dda7 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=150)),'',(usd_sum*0.0596)]
+    dda8 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=180)),'',(usd_sum*0.0)]
+    dda9 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=365)),'',(usd_sum*0.0)]
+    dda10 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=730)),'',(usd_sum*0.3056)]
 
     df.loc[df.shape[0]] = dda1
     x = len(df.index)-1
@@ -246,24 +216,9 @@ def insertDDA():
 
     print("DDA row has been added to the bottom - ✔")
     # Delete not needed DDA row
+    df.drop('DDA1',inplace=True)
     
     df.to_csv('inputRawFile.csv')
-
-"""
-CUURENT DATE + BUCKET RANGE 
-BUCKET RANGE DATES 
-CURRENT DATE + 1 DAY = 0.1267
-CURRENT DATE + 6 DAYS = 0.2578
-CURRENT DATE + 8 DAYS = 0.0282
-CURRENT DATE + 15 DAYS = 0.0834
-CURRENT DATE + 30 DAYS = 0.0
-CURRENT DATE + 30 DAYS = 0.1387
-CURRENT DATW + 150 DAYS = 0.0596
-CURRENT DATE + 180 DAYS = 0.0 
-CURRENT DATE = 365 DAYS = 0.0 
-CURRENT DATE + 730 DAYS = 0.3056 
-MULTIPLY THE DDA SUM WITH THE PERCENTAGE *(DOUBLES)* 
-"""
 
 ###############################################################################################################################
 # Calls all functions
