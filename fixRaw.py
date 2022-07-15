@@ -1,3 +1,4 @@
+from operator import index
 from re import T
 import pandas as pd
 import numpy as np
@@ -13,7 +14,7 @@ rates = parse_json['conversion_rates']
 
 ###############################################################################################################################
 # Creates the dataframe for the file
-df = pd.read_csv("inputRawFile.csv", index_col=False)
+df = pd.read_csv("inputRawFile.csv", index_col=0)
 
 ###############################################################################################################################
 # Remove rows that are not ODA/CAA/LAA or OAB/OAP that
@@ -31,14 +32,14 @@ def removeRows():
     # account number and remove them
     df.drop(df[
         (df['SCHEME_TYPE'] == 'OAB') &
-        (~df['ACCOUNT_NO.'].str.contains("1121",case=False))
+        (~df.index.str.contains("1121",case=False))
     ].index,inplace=True)
     df.drop(df[
         (df['SCHEME_TYPE'] == 'OAP') &
-        (~df['ACCOUNT_NO.'].str.contains("1121",case=False))
+        (~df.index.str.contains("1121",case=False))
     ].index,inplace=True)
 
-    df.to_csv('inputRawFile.csv',index=False)
+    df.to_csv('inputRawFile.csv')
     print("Irrelevant scheme types have been removed and account numbers containing 1121 have been saved - ✔")
 
 ###############################################################################################################################
@@ -49,7 +50,7 @@ def emptyMaturity():
     
     df['MATURITY_DATE'].fillna(tomorrow_datetime.date(), inplace=True)
     df['MATURITY_DATE'] = pd.to_datetime(df['MATURITY_DATE'],errors='coerce')
-    df.to_csv('inputRawFile.csv',index=False)
+    df.to_csv('inputRawFile.csv')
 
     print("Empty Maturity_Date cells have been set to tomorrow's date: "+ str(tomorrow_datetime.date())+ " - ✔")
 
@@ -62,10 +63,10 @@ def sortByMaturity():
     for i in range(0,x):
         if type(df['MATURITY_DATE'][i]) == 'datetime.date':
             if((df['MATURITY_DATE'][i]) < datetime.now().date()):
-                df['MATURITY_DATE'][i] = tomorrow_datetime.date()
+                df['MATURITY_DATE'][i] = tomorrow_datetime
 
     df.sort_values(by='MATURITY_DATE', ascending=True, inplace=True)
-    df.to_csv('inputRawFile.csv',index=False)
+    df.to_csv('inputRawFile.csv')
 
     print("Maturity dates sorted sucessfully and old dates are set to tomorrow's date - ✔")
 
@@ -73,7 +74,7 @@ def sortByMaturity():
 # Add a "AMOUNT" column after CLS_BALANCE column 
 # then multiply CLS_BALANCE cells by -1
 def addAmountColumn():
-    df.insert(4,'AMOUNT','')
+    df.insert(3,'AMOUNT','')
     x = len(df.index)
     non = "',"
     for i in range(0,x):
@@ -82,19 +83,19 @@ def addAmountColumn():
         for char in non: value=value.replace(char,"")
         value = float(value)
         df['AMOUNT'].values[i] = value * -1
-    df.to_csv('inputRawFile.csv',index=False)
+    df.to_csv('inputRawFile.csv')
     print("Amount column has been inserted with negative values - ✔")
 
 def insertColumn(columnName,index,values):
     df.insert(index,columnName,values)
-    df.to_csv('inputRawFile.csv',index=False)
+    df.to_csv('inputRawFile.csv')
     print(columnName + " has been inserted into the dataframe in column " + index + "- ✔")
 
 ###############################################################################################################################
 # Add USD column and covert AMOUNT to USD currency by the related conversion rate
 # Add USD_AMOUNT after CURRENCY
 def convertToUSD():
-    df.insert(14,'USD_AMOUNT','')
+    df.insert(13,'USD_AMOUNT','')
     x = len(df.index)
     non = "',"
     for i in range(0,x):
@@ -102,7 +103,7 @@ def convertToUSD():
         for char in non: value=value.replace(char,"")
         value = float(value) * -1
         df['USD_AMOUNT'].values[i] = value * rates[df['CRNCY'].values[i]]
-    df.to_csv('inputRawFile.csv',index=False)
+    df.to_csv('inputRawFile.csv')
     print("USD_AMOUNT column has been inserted and currencies have been converted to USD - ✔")
 
 ###############################################################################################################################
@@ -139,43 +140,88 @@ def clearFile(file):
 # make a file entry name dda  that is in columns
 # "ACCOUNT_NO" & "ACCOUNT_NANE"  
 # CALCULATE THE SUM FOR ALL USD_AMOUNT
-
 def insertDDA():
-    caa = df.loc[df['SCHEME_TYPE'] == 'CAA', 'USD_AMOUNT'].sum()
-    oda = df.loc[df['SCHEME_TYPE'] == 'ODA', 'USD_AMOUNT'].sum()
-    usd_sum = caa + oda
+    empty = []
+    for i in range(0,len(df.index)):
+        if(df['SCHEME_TYPE'][i] == 'CAA'):
+            empty.append(df['USD_AMOUNT'][i])
+    for i in range(0,len(df.index)):
+        if(df['SCHEME_TYPE'][i] == 'ODA'):
+            empty.append(df['USD_AMOUNT'][i])
+    usd_sum = sum(empty)
+    print(usd_sum)
+    dda = [
+        'DDA', 'DDA',
+        '','','','','','',usd_sum
+    ]
+    df.loc[df.shape[0]] = dda
+    x = len(df.index)-1
+    df.rename(index={x:'DDA1'},inplace=True)
 
-    dda1 = ['DDA', 'DDA', 'DDA','','','','',(datetime.now() + timedelta(days=1)),'',(usd_sum*0.1267)]
-    dda2 = ['DDA','DDA', 'DDA','','','','',(datetime.now() + timedelta(days=6)),'',(usd_sum*0.2578)]
-    dda3 = ['DDA','DDA', 'DDA','','','','',(datetime.now() + timedelta(days=8)),'',(usd_sum*0.0282)]
-    dda4 = ['DDA','DDA', 'DDA','','','','',(datetime.now() + timedelta(days=15)),'',(usd_sum*0.0834)]
-    dda5 = ['DDA','DDA', 'DDA','','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.0)]
-    dda6 = ['DDA','DDA', 'DDA','','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.1387)]
-    dda7 = ['DDA','DDA', 'DDA','','','','',(datetime.now() + timedelta(days=150)),'',(usd_sum*0.0596)]
-    dda8 = ['DDA','DDA', 'DDA','','','','',(datetime.now() + timedelta(days=180)),'',(usd_sum*0.0)]
-    dda9 = ['DDA','DDA', 'DDA','','','','',(datetime.now() + timedelta(days=365)),'',(usd_sum*0.0)]
-    dda10 = ['DDA','DDA', 'DDA','','','','',(datetime.now() + timedelta(days=730)),'',(usd_sum*0.3056)]
+    dda1 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=1)),'',(usd_sum*0.1267)]
+    dda2 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=6)),'',(usd_sum*0.2578)]
+    dda3 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=8)),'',(usd_sum*0.0282)]
+    dda4 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=14)),'',(usd_sum*0.0834)]
+    dda5 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.0)]
+    dda6 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.1387)]
+    dda7 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=90)),'',(usd_sum*0.0596)]
+    dda8 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=180)),'',(usd_sum*0.0)]
+    dda9 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=365)),'',(usd_sum*0.0)]
+    dda10 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=730)),'',(usd_sum*0.3056)]
 
     df.loc[df.shape[0]] = dda1
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+    
     df.loc[df.shape[0]] = dda2
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+    
     df.loc[df.shape[0]] = dda3
-    df.loc[df.shape[0]] = dda4
-    df.loc[df.shape[0]] = dda5
-    df.loc[df.shape[0]] = dda6
-    df.loc[df.shape[0]] = dda7
-    df.loc[df.shape[0]] = dda8
-    df.loc[df.shape[0]] = dda9
-    df.loc[df.shape[0]] = dda10
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
 
-    print("DDA row has been added to the bottom - ✔")
-     # Fixing date formatting
+    df.loc[df.shape[0]] = dda4
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda5
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda6
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda7
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda8
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda9
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    df.loc[df.shape[0]] = dda10
+    x = len(df.index)-1
+    df.rename(index={x:'DDA'},inplace=True)
+
+    # Fixing date formatting
     for i in range(0,len(df.index)):
         if(df['MATURITY_DATE'][i] != ''):
             date = df['MATURITY_DATE'][i]
-            date.strftime('%Y-%m-%d')
             df['MATURITY_DATE'][i] = date.strftime('%Y-%m-%d')
 
-    df.to_csv('inputRawFile.csv',index=False)
+    #df1 = df[(df['SCHEME_TYPE'] != 'CAA') & (df['SCHEME_TYPE'] != 'ODA')]
+
+    print("DDA row has been added to the bottom - ✔")
+    # Delete not needed DDA row
+    #df.drop('DDA1',inplace=True)
+    
+    df.to_csv('inputRawFile.csv')
 
 ###############################################################################################################################
 # Calls all functions
@@ -186,6 +232,9 @@ def fixFile():
     addAmountColumn()
     convertToUSD()
     removeColumns()
-    return(df)
+    insertDDA()
+    #df1 = df[['MATURITY_DATE','USD_AMOUNT']]
+    #df1.reset_index(drop=True,inplace=True)
+    #df1.to_csv('inputRawFile.csv',index=True)
 
-insertDDA()
+print(rates)
