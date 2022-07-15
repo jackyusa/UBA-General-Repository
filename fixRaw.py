@@ -137,16 +137,16 @@ def clearFile(file):
 
 ###############################################################################################################################
 # Go through the SCHEME_TYPES pull out CAA & ODA 
-# make a file entry name dda  that is in columns
-# "ACCOUNT_NO" & "ACCOUNT_NANE"  
 # CALCULATE THE SUM FOR ALL USD_AMOUNT
 def insertDDA():
     empty = []
     for i in range(0,len(df.index)):
         if(df['SCHEME_TYPE'][i] == 'CAA'):
+            df['USD_AMOUNT'][i] = pd.to_numeric(df['USD_AMOUNT'])
             empty.append(df['USD_AMOUNT'][i])
     for i in range(0,len(df.index)):
         if(df['SCHEME_TYPE'][i] == 'ODA'):
+            df['USD_AMOUNT'][i] = pd.to_numeric(df['USD_AMOUNT'])
             empty.append(df['USD_AMOUNT'][i])
     usd_sum = sum(empty)
     print(usd_sum)
@@ -215,13 +215,12 @@ def insertDDA():
             date = df['MATURITY_DATE'][i]
             df['MATURITY_DATE'][i] = date.strftime('%Y-%m-%d')
 
-    #df1 = df[(df['SCHEME_TYPE'] != 'CAA') & (df['SCHEME_TYPE'] != 'ODA')]
 
     print("DDA row has been added to the bottom - ✔")
     # Delete not needed DDA row
     #df.drop('DDA1',inplace=True)
     
-    df.to_csv('inputRawFile.csv')
+    #df.to_csv('inputRawFile.csv')
 
 ###############################################################################################################################
 # Calls all functions
@@ -237,4 +236,5 @@ def fixFile():
     #df1.reset_index(drop=True,inplace=True)
     #df1.to_csv('inputRawFile.csv',index=True)
 
-print(rates)
+
+fixFile()
