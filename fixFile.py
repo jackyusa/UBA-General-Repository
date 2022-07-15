@@ -8,10 +8,10 @@ import requests
 from pkg_resources import empty_provider
 import json
 
-response = requests.get("https://v6.exchangerate-api.com/v6/81a98818ac24839899cdc992/latest/USD")
-data = response.text
-parse_json = json.loads(data)
-rates = parse_json['conversion_rates']
+#response = requests.get("https://v6.exchangerate-api.com/v6/81a98818ac24839899cdc992/latest/USD")
+#data = response.text
+#parse_json = json.loads(data)
+#rates = parse_json['conversion_rates']
 
 df = pd.read_csv('inputRawFile.csv', index_col=False)
 
@@ -47,15 +47,18 @@ def emptyMaturity():
     df['MATURITY_DATE'] = pd.to_datetime(df['MATURITY_DATE'],errors='coerce')
     df.dropna(inplace=True)
 
-    for i in range(1,len(df.index)):
-        df['MATURITY_DATE'][i] = pd.to_datetime(df['MATURITY_DATE'][i])
-        print(type(df['MATURITY_DATE'][i]))
+    #for i in range(1,len(df.index)):
+        #df['MATURITY_DATE'][i] = pd.to_datetime(df['MATURITY_DATE'][i])
+        #print(type(df['MATURITY_DATE'][i]))
 
     df.sort_values(by='MATURITY_DATE', ascending=True, inplace=True)
     df.to_csv('output.csv',index=False)
 
-
+def addAmountColumn():
+    df['AMOUNT'] = pd.Series(dtype='int')
+    df.to_csv('output.csv')
 
 clearFile('output.csv')
 removeColumns()
 emptyMaturity()
+addAmountColumn()
