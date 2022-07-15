@@ -1,31 +1,48 @@
 from cmath import nan
 import pandas as pd
 from datetime import timedelta, datetime
-import openpyxl
+import requests
+from pkg_resources import empty_provider
+import json
 
-df = pd.read_csv('test.csv',index_col=0)
+response = requests.get("https://v6.exchangerate-api.com/v6/81a98818ac24839899cdc992/latest/USD")
+data = response.text
+parse_json = json.loads(data)
+rates = parse_json['conversion_rates']
 
-def date():
-    tomorrow_datetime = datetime.now() + timedelta(days=1)
-    
-    print(tomorrow_datetime.date())
+df = pd.read_csv('inputTest.csv',index_col=0)
 
 # test setting empty ones to 1 then changing them
-def emptyMaturity():
+def emptyDate():
     tomorrow_datetime = datetime.now() + timedelta(days=1)
-    df['date'].fillna(tomorrow_datetime.date(), inplace=True)
-    df["date"] = pd.to_datetime(df["date"])
-    df.to_csv('test.csv')
+    df['Date'].fillna(tomorrow_datetime.date(), inplace=True)
+    df["Date"] = pd.to_datetime(df["Date"])
+    df1 = df.sort_values(by="Date")
+    df1.to_csv('inputTest.csv')
 
     print("All empty Maturity dates have been set to tomorrows date.")
 
 def removeRows():
     df.drop(df[
-        (df.index != "jacky") &
-        (df.index != "jason")].index, inplace=True)
+        (df['Amount'] == 230) &
+        (df.index.str.contains("a"))
+    ].index,inplace=True)
 
-    df['amount'] = df['amount'].apply(str)
+    df.to_csv('inputTest.csv')
 
-    df.to_csv("test.csv")
+def clearFile():
+    f = open('inputTest.csv', "w")
+    f.truncate()
+    f.close()
 
-emptyMaturity()
+def addColumn():
+    df.insert(2,'neg_Amount','')
+    df.to_csv('inputTest.csv')
+
+def convertToUSD():
+    df.insert(4,'USD_Amount','')
+    x = len(df.index)
+    for i in range(0,x):
+        df['USD_Amount'].values[i] = df['Amount'].values[i] * rates[df['Currency'].values[i]]
+    df.to_csv('inputTest.csv')
+convertToUSD()
