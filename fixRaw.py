@@ -161,7 +161,7 @@ def insertDDA():
     dda1 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=1)),'',(usd_sum*0.1267)]
     dda2 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=6)),'',(usd_sum*0.2578)]
     dda3 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=8)),'',(usd_sum*0.0282)]
-    dda4 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=14)),'',(usd_sum*0.0834)]
+    dda4 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=15)),'',(usd_sum*0.0834)]
     dda5 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.0)]
     dda6 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=30)),'',(usd_sum*0.1387)]
     dda7 = ['DDA', 'DDA','','','','',(datetime.now() + timedelta(days=90)),'',(usd_sum*0.0596)]
