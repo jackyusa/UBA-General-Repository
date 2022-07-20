@@ -46,3 +46,26 @@ def convertToUSD():
         df['USD_Amount'].values[i] = df['Amount'].values[i] * rates[df['Currency'].values[i]]
     df.to_csv('inputTest.csv')
 convertToUSD()
+
+
+def filterColumns():
+    df.rename(columns={"End Date": "MATURITY_DATE", "Principal Amount (Signed)":"USD_AMOUNT"},inplace=True)
+    df['MATURITY_DATE'] = pd.to_datetime(df['MATURITY_DATE'],errors='coerce')
+    keep = ['MATURITY_DATE','USD_AMOUNT']
+    df1 = df[keep]
+    df1.to_csv('output.csv',index=False)
+    return(df1)
+def mergeFiles():
+    result = pd.concat([finalFile(),filterColumns()])
+    result.reset_index(drop=True,inplace=True)
+    result.to_csv('output.csv',index=False)
+def fixDates():
+    for i in range(0,len(df.index)):
+        if(df['MATURITY_DATE'][i] != ''):
+            date = df['MATURITY_DATE'][i]
+            df['MATURITY_DATE'][i] = date.strftime('%Y-%m-%d')
+    df.to_csv('output.csv',index=True)
+def fixFile2():
+    clearFile('output.csv')
+    mergeFiles()
+fixFile2()

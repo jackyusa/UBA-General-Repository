@@ -235,6 +235,3 @@ def fixFile():
     #df1 = df[['MATURITY_DATE','USD_AMOUNT']]
     #df1.reset_index(drop=True,inplace=True)
     #df1.to_csv('inputRawFile.csv',index=True)
-
-
-fixFile()

@@ -81,3 +81,5 @@ def formatFiles():
     result = pd.concat(frames)
     result.reset_index(drop=True,inplace=True)
     result.to_csv('inputBlotterFile.csv')
+
+formatFiles()
