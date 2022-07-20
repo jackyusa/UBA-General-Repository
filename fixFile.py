@@ -41,22 +41,31 @@ def clearFile(file):
 
 def emptyMaturity():
     tomorrow_datetime = datetime.datetime.now().date() + timedelta(days=1) # datetime.date type
-    today_datetime = datetime.datetime.now().date()
 
     df['MATURITY_DATE'].fillna(tomorrow_datetime, inplace=True) # datetime.date type
     df['MATURITY_DATE'] = pd.to_datetime(df['MATURITY_DATE'],errors='coerce')
-    df.dropna(inplace=True)
-
-    for i in range(1,len(df.index)):
-        df['MATURITY_DATE'][i] = pd.to_datetime(df['MATURITY_DATE'][i])
-        print(type(df['MATURITY_DATE'][i]))
 
     df.sort_values(by='MATURITY_DATE', ascending=True, inplace=True)
     df.to_csv('output.csv',index=False)
 
 def addAmountColumn():
-    df['AMOUNT'] = pd.Series(dtype='int')
-    df.to_csv('output.csv')
+    df.insert(4,'AMOUNT',np.nan)
+    x = df.shape[0]
+    for i in range(0,x):
+        value = df['CLS_BALANCE'].values[i]
+        print(value)
+
+
+    df.to_csv('output.csv',index=False)
+
+def convertToUSD():
+    0
+
+def insertDDA():
+    0
+
+def deleteCAA_ODA():
+    0
 
 clearFile('output.csv')
 removeColumns()
