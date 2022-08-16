@@ -1,8 +1,7 @@
 # **UBA General Repository**
 
 ## Code Files:
-###### To run these codes on Visual Studios if double clicking the file doesn't work the whole folder needs to be
-###### opened. Open Visual Studios -> Click File -> Open Folder -> Click the File and Click Select Folder.
+###### To run the codes on Visual Studios if double clicking the file doesn't work the whole folder needs to be opened. Open Visual Studios -> Click File -> Open Folder -> Click the File and Click Select Folder.
 ```
 Add Apostrophes and Comma
 - The code takes in an input csv file and places the text in the first column into apostrophes and a comma at the end.
