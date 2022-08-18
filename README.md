@@ -2,8 +2,9 @@
 
 ## Code Files:
 ###### To run the codes on Visual Studios if double clicking the file doesn't work the whole folder needs to be opened. Open Visual Studios -> Click File -> Open Folder -> Click the File and Click Select Folder.
+
+##### Add Apostrophes and Comma
 ```
-Add Apostrophes and Comma
 - The code takes in an input csv file and places the text in the first column into apostrophes and a comma at the end.
 - Rename the initial/original csv file to "input" and make sure it is a "CSV (Comma deliminted) (*.csv)".
 - Place the file into the folder and when prompted if you want to replace the other input.csv file click yes.
@@ -13,8 +14,9 @@ Add Apostrophes and Comma
 - Can still just click the run icon ( play icon ) on visual studios in the code.py file on the top left.
 ```
 
+
+##### Check Audit Names
 ```
-Check Audit Names
 - The code takes in a names csv file and creates files that contain a name for each count.
 - The code takes template.csv as the template for each of the files created.
 - Rename the initial/original csv file containing the names to "names" and make sure it is 
@@ -26,8 +28,8 @@ Check Audit Names
 - Can still just click the run icon ( play icon ) on visual studios in the main.py file on the top left.
 ```
 
+##### MCI-MCO Report
 ```
-MCI-MCO Report
 - The code takes in two input csv files - "inputRawFile" and "inputBlotterFile".
 - inputRawFile contains the data that will be manipulated and filtered.
 - Specifics:
@@ -52,8 +54,9 @@ MCI-MCO Report
 - Then run the fixBlotterFile.py code with the same process as the other codes.
 ```
 
+
+##### Top Hits
 ```
-Top Hits
 - This code takes in an input csv file and for each matches row, it splits the data points into their own row and
 - splits the Match and their information into two different columns. The code also gives the count of the matches
 - in a separate column and saves the data in the outputs files and displays a bar graph of the top x number of
